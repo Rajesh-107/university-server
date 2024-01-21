@@ -9,7 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.get('/', (req, res) => {
-    res.send("Hellow vai");
+    res.send('Hellow vai');
 });
 console.log(process.cwd());
 exports.default = app;
