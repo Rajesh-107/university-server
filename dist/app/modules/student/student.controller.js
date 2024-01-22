@@ -13,16 +13,52 @@ exports.StudentControllers = void 0;
 const student_service_1 = require("./student.service");
 const createStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const student = req.body;
-        const result = yield student_service_1.StudentServices.createStudentIntoDB(student);
-        res.status(201).json({
+        const studentData = req.body;
+        const result = yield student_service_1.StudentServices.createStudentIntoDB(studentData);
+        res.status(200).json({
             success: true,
             message: 'Student created successfully',
             data: result,
         });
     }
     catch (error) {
-        console.log('Error creating student:', error);
+        console.error('Error creating student:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 });
-exports.StudentControllers = { createStudent };
+const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield student_service_1.StudentServices.getAllStudentsFromDB();
+        res.status(200).json({
+            success: true,
+            message: 'Student found successfully',
+            data: result,
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+const getSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const studentId = req.params.studentId;
+        const result = yield student_service_1.StudentServices.getSingleStudentFromDB(studentId);
+        res.status(200).json({
+            success: true,
+            message: 'Single Student data found successfully',
+            data: result,
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.StudentControllers = {
+    createStudent,
+    getAllStudents,
+    getSingleStudent,
+};

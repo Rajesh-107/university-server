@@ -8,21 +8,23 @@ export type Guardian = {
   motherOccupation: string;
   motherContactNo: string;
 };
-export type localGuardian = {
+
+export type LocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
+
 export type Student = {
   id: string;
   name: {
-    fisrtName: string;
+    firstName: string;
     middleName: string;
     lastName: string;
   };
   gender: 'male' | 'female';
-  dateofBirth?: string;
+  dateOfBirth?: string;
   contactNo: string;
   emergencyNumber: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
@@ -31,7 +33,7 @@ export type Student = {
   guardian: Guardian;
   email: string;
   avatar?: string;
-  localGuardian: localGuardian;
+  localGuardian: LocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
