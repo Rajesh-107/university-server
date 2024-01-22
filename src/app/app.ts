@@ -5,10 +5,10 @@ import cors from 'cors';
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req: Request, res: Response) => {
+const getAController = (req: Request, res: Response) => {
   res.send('Hellow vai');
-});
+};
 
-console.log(process.cwd());
+app.get('/', getAController);
 
 export default app;
