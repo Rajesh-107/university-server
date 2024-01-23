@@ -1,24 +1,34 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { Student } from './student.interface';
+import validator from 'validator';
 
 const studentsSchema = new Schema<Student>({
-  id: { type: String },
+  id: { type: String, unique: true, required: true },
   name: {
     firstName: {
       type: String,
-      required: true,
+      required: [true, 'First Name is required'],
+      trim: true,
+      validate: function (value) {
+        console.log(value);
+      },
     },
     middleName: {
       type: String,
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
+      trim: true,
     },
   },
   gender: {
     type: String,
-    enum: ['male', 'female'],
+    enum: {
+      values: ['male', 'female', 'other'],
+      message: 'Gender must be needed',
+    },
     required: true,
   },
   dateOfBirth: {
@@ -54,7 +64,11 @@ const studentsSchema = new Schema<Student>({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required'],
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: 'Email is not a valid email',
+    },
   },
   avatar: {
     type: String,
@@ -71,7 +85,7 @@ const studentsSchema = new Schema<Student>({
   isActive: {
     type: String,
     enum: ['active', 'blocked'],
-    required: true,
+    default: 'active',
   },
 });
 

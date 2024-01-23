@@ -40,7 +40,11 @@ const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
     catch (error) {
-        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 });
 const getSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,11 +58,34 @@ const getSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
     catch (error) {
-        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
+    }
+});
+const deleteSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const studentId = req.params.studentId;
+        const result = yield student_service_1.StudentServices.deleteSingleStudentFromDB(studentId);
+        res.status(200).json({
+            success: true,
+            message: 'Single Student data deleted successfully',
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
     }
 });
 exports.StudentControllers = {
     createStudent,
     getAllStudents,
     getSingleStudent,
+    deleteSingleStudent,
 };
