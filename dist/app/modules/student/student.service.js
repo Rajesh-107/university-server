@@ -20,16 +20,24 @@ const getAllStudentsFromDB = (student) => __awaiter(void 0, void 0, void 0, func
     return result;
 });
 const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.StudentModel.findOne({ id });
+    // const result = await StudentModel.findOne({ id });
+    const result = yield student_model_1.StudentModel.aggregate([{ $match: { id: id } }]);
     return result;
 });
 const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.StudentModel.deleteOne({ id });
+    const result = yield student_model_1.StudentModel.updateOne({ id }, { isDeleted: true });
     return result;
+});
+const updateSingleStudentInDB = (id, updatedData) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield student_model_1.StudentModel.updateOne({ id }, { $set: updatedData });
+    // Optionally, retrieve the updated document after the update
+    const updatedDocument = yield student_model_1.StudentModel.findOne({ id });
+    return updatedDocument;
 });
 exports.StudentServices = {
     createStudentIntoDB,
     getAllStudentsFromDB,
     getSingleStudentFromDB,
     deleteSingleStudentFromDB,
+    updateSingleStudentInDB,
 };

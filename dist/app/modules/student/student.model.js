@@ -6,8 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentModel = void 0;
 const mongoose_1 = require("mongoose");
 const validator_1 = __importDefault(require("validator"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const config_1 = __importDefault(require("../../config"));
 const studentsSchema = new mongoose_1.Schema({
-    id: { type: String, unique: true, required: true },
+    id: { type: String, required: true },
+    password: {
+        type: String,
+        unique: true,
+        required: true,
+        maxLength: [20, 'Password cannot be more than 20 characters'],
+    },
     name: {
         firstName: {
             type: String,
@@ -68,6 +76,7 @@ const studentsSchema = new mongoose_1.Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: [true, 'Email is required'],
         validate: {
             validator: (value) => validator_1.default.isEmail(value),
@@ -91,5 +100,43 @@ const studentsSchema = new mongoose_1.Schema({
         enum: ['active', 'blocked'],
         default: 'active',
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+}, {
+    toJSON: {
+        virtuals: true,
+    },
+});
+//pre save hook
+studentsSchema.pre('save', function (next) {
+    const user = this;
+    bcrypt_1.default.hash(user.password, Number(config_1.default.bcrypt_salt_round), function (err, hash) {
+        if (err) {
+            return next(err);
+        }
+        user.password = hash;
+        next();
+    });
+});
+studentsSchema.virtual('fullName').get(function (err, hash) {
+    return this.name.firstName + this.name.middleName + this.name.lastName;
+});
+//post save middleware
+studentsSchema.post('save', function (doc, next) {
+    doc.password = '';
+    next();
+    // console.log(this, 'we saveed our data');
+});
+studentsSchema.pre('find', function (next) {
+    // console.log(this, 'found');
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+studentsSchema.pre('findOne', function (next) {
+    // console.log(this, 'found');
+    this.find({ isDeleted: { $ne: true } });
+    next();
 });
 exports.StudentModel = (0, mongoose_1.model)('Student', studentsSchema);

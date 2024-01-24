@@ -11,4 +11,5 @@ router.post('/create-student', student_controller_1.StudentControllers.createStu
 router.get('/', student_controller_1.StudentControllers.getAllStudents);
 router.get('/:studentId', student_controller_1.StudentControllers.getSingleStudent);
 router.delete('/:studentId', student_controller_1.StudentControllers.deleteSingleStudent);
+router.put('/:studentId', student_controller_1.StudentControllers.singleStudentDataUpdate);
 exports.StudentRoutes = router.get('');

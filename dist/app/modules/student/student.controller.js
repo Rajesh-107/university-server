@@ -83,9 +83,36 @@ const deleteSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
 });
+const singleStudentDataUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const studentId = req.params.studentId;
+        const updatedData = req.body;
+        const existingStudent = yield student_service_1.StudentServices.getSingleStudentFromDB(studentId);
+        if (!existingStudent || existingStudent.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found',
+            });
+        }
+        const result = yield student_service_1.StudentServices.updateSingleStudentInDB(studentId, updatedData);
+        res.status(200).json({
+            success: true,
+            message: 'Single Student data updated successfully',
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: error.message,
+        });
+    }
+});
 exports.StudentControllers = {
     createStudent,
     getAllStudents,
     getSingleStudent,
     deleteSingleStudent,
+    singleStudentDataUpdate,
 };
