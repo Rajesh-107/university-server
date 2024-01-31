@@ -30,7 +30,6 @@ const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, func
 });
 const updateSingleStudentInDB = (id, updatedData) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield student_model_1.StudentModel.updateOne({ id }, { $set: updatedData });
-    // Optionally, retrieve the updated document after the update
     const updatedDocument = yield student_model_1.StudentModel.findOne({ id });
     return updatedDocument;
 });

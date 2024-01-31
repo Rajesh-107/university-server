@@ -22,10 +22,10 @@ const deleteSingleStudentFromDB = async (id: string) => {
   const result = await StudentModel.updateOne({ id }, { isDeleted: true });
   return result;
 };
+
 const updateSingleStudentInDB = async (id, updatedData) => {
   const result = await StudentModel.updateOne({ id }, { $set: updatedData });
 
-  // Optionally, retrieve the updated document after the update
   const updatedDocument = await StudentModel.findOne({ id });
 
   return updatedDocument;
