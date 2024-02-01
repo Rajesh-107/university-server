@@ -11,26 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentControllers = void 0;
 const student_service_1 = require("./student.service");
-const createStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const studentData = req.body;
-        const result = yield student_service_1.StudentServices.createStudentIntoDB(studentData);
-        res.status(200).json({
-            success: true,
-            message: 'Student created successfully',
-            data: result,
-        });
-    }
-    catch (error) {
-        console.error('Error creating student:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: error.message,
-        });
-    }
-});
-const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllStudents = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield student_service_1.StudentServices.getAllStudentsFromDB();
         res.status(200).json({
@@ -40,14 +21,15 @@ const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
     catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: error.message,
-        });
+        // res.status(500).json({
+        //   success: false,
+        //   message: 'Internal Server Error',
+        //   error: error.message,
+        // });
+        next(error);
     }
 });
-const getSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSingleStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentId = req.params.studentId;
         const result = yield student_service_1.StudentServices.getSingleStudentFromDB(studentId);
@@ -58,14 +40,10 @@ const getSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
     catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: error.message,
-        });
+        next(error);
     }
 });
-const deleteSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteSingleStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentId = req.params.studentId;
         const result = yield student_service_1.StudentServices.deleteSingleStudentFromDB(studentId);
@@ -76,14 +54,10 @@ const deleteSingleStudent = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: error.message,
-        });
+        next(error);
     }
 });
-const singleStudentDataUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const singleStudentDataUpdate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentId = req.params.studentId;
         const updatedData = req.body;
@@ -102,15 +76,10 @@ const singleStudentDataUpdate = (req, res) => __awaiter(void 0, void 0, void 0, 
         });
     }
     catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal Server Error',
-            error: error.message,
-        });
+        next(error);
     }
 });
 exports.StudentControllers = {
-    createStudent,
     getAllStudents,
     getSingleStudent,
     deleteSingleStudent,

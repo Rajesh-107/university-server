@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export type Guardian = {
   fatherName: string;
   fatherOccupation: string;
@@ -16,6 +18,7 @@ export type LocalGuardian = {
 
 export type Student = {
   id: string;
+  user: Types.ObjectId;
   password: string;
   name: {
     firstName: string;
@@ -34,6 +37,5 @@ export type Student = {
   avatar?: string;
   localGuardian: LocalGuardian;
   profileImg?: string;
-  isActive: 'active' | 'blocked';
   isDeleted: boolean;
 };

@@ -1,24 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Schema, model } from 'mongoose';
 import { Student } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const studentsSchema = new Schema<Student>(
   {
     id: { type: String, required: true },
-    password: {
-      type: String,
+
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User id is required'],
       unique: true,
-      required: true,
-      maxLength: [20, 'Password cannot be more than 20 characters'],
+      ref: 'User',
     },
     name: {
       firstName: {
         type: String,
         required: [true, 'First Name is required'],
         trim: true,
-        validate: function (value) {
+        validate: function (value: any) {
           console.log(value);
         },
       },
@@ -92,11 +93,6 @@ const studentsSchema = new Schema<Student>(
     profileImg: {
       type: String,
     },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -108,35 +104,8 @@ const studentsSchema = new Schema<Student>(
     },
   }
 );
-
-//pre save hook
-studentsSchema.pre('save', function (next) {
-  const user = this;
-
-  bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-    function (err, hash) {
-      if (err) {
-        return next(err);
-      }
-
-      user.password = hash;
-      next();
-    }
-  );
-});
-
 studentsSchema.virtual('fullName').get(function (err, hash) {
   return this.name.firstName + this.name.middleName + this.name.lastName;
-});
-
-//post save middleware
-studentsSchema.post('save', function (doc, next) {
-  doc.password = '';
-
-  next();
-  // console.log(this, 'we saveed our data');
 });
 
 studentsSchema.pre('find', function (next) {

@@ -4,17 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentModel = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const mongoose_1 = require("mongoose");
 const validator_1 = __importDefault(require("validator"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const config_1 = __importDefault(require("../../config"));
 const studentsSchema = new mongoose_1.Schema({
     id: { type: String, required: true },
-    password: {
-        type: String,
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: [true, 'User id is required'],
         unique: true,
-        required: true,
-        maxLength: [20, 'Password cannot be more than 20 characters'],
+        ref: 'User',
     },
     name: {
         firstName: {
@@ -95,11 +95,6 @@ const studentsSchema = new mongoose_1.Schema({
     profileImg: {
         type: String,
     },
-    isActive: {
-        type: String,
-        enum: ['active', 'blocked'],
-        default: 'active',
-    },
     isDeleted: {
         type: Boolean,
         default: false,
@@ -109,25 +104,8 @@ const studentsSchema = new mongoose_1.Schema({
         virtuals: true,
     },
 });
-//pre save hook
-studentsSchema.pre('save', function (next) {
-    const user = this;
-    bcrypt_1.default.hash(user.password, Number(config_1.default.bcrypt_salt_round), function (err, hash) {
-        if (err) {
-            return next(err);
-        }
-        user.password = hash;
-        next();
-    });
-});
 studentsSchema.virtual('fullName').get(function (err, hash) {
     return this.name.firstName + this.name.middleName + this.name.lastName;
-});
-//post save middleware
-studentsSchema.post('save', function (doc, next) {
-    doc.password = '';
-    next();
-    // console.log(this, 'we saveed our data');
 });
 studentsSchema.pre('find', function (next) {
     // console.log(this, 'found');
