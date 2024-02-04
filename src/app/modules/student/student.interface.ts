@@ -16,7 +16,7 @@ export type LocalGuardian = {
   address: string;
 };
 
-export type Student = {
+export type StudentSchema = {
   id: string;
   user: Types.ObjectId;
   password: string;
