@@ -16,7 +16,7 @@ export type LocalGuardian = {
   address: string;
 };
 
-export type StudentSchema = {
+export type Student = {
   id: string;
   user: Types.ObjectId;
   password: string;
@@ -26,7 +26,7 @@ export type StudentSchema = {
     lastName: string;
   };
   gender: 'male' | 'female';
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   contactNo: string;
   emergencyNumber: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';

@@ -43,7 +43,7 @@ export const CreateStudentSchema = z.object({
         lastName: z.string(),
       }),
       gender: z.enum(['male', 'female']),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       contactNo: z.string(),
       emergencyNumber: z.string(),
       bloodGroup: z

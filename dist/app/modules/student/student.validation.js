@@ -27,7 +27,7 @@ exports.CreateStudentSchema = zod_1.z.object({
                 lastName: zod_1.z.string(),
             }),
             gender: zod_1.z.enum(['male', 'female']),
-            dateOfBirth: zod_1.z.string().optional(),
+            dateOfBirth: zod_1.z.date().optional(),
             contactNo: zod_1.z.string(),
             emergencyNumber: zod_1.z.string(),
             bloodGroup: zod_1.z

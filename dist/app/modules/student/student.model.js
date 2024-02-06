@@ -44,7 +44,7 @@ const studentsSchema = new mongoose_1.Schema({
         required: true,
     },
     dateOfBirth: {
-        type: String,
+        type: Date,
     },
     contactNo: {
         type: String,
@@ -104,9 +104,9 @@ const studentsSchema = new mongoose_1.Schema({
         virtuals: true,
     },
 });
-studentsSchema.virtual('fullName').get(function (err, hash) {
-    return this.name.firstName + this.name.middleName + this.name.lastName;
-});
+// studentsSchema.virtual('fullName').get(function (err, hash) {
+//   return this.name.firstName + this.name.middleName + this.name.lastName;
+// });
 studentsSchema.pre('find', function (next) {
     // console.log(this, 'found');
     this.find({ isDeleted: { $ne: true } });
