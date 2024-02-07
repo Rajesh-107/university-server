@@ -8,25 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AcademicSemesterControllers = void 0;
-const createAcademicSemester = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    //   try {
-    //     const { password, student: studentData } = req.body;
-    //     const result = await UserServices.createStudentIntoDB(
-    //       password,
-    //       studentData
-    //     );
-    //     res.status(200).json({
-    //       success: true,
-    //       message: 'Student created successfully',
-    //       data: result,
-    //     });
-    //   } catch (error) {
-    //     console.error('Error creating student:', error);
-    //     next(error);
-    //   }
-});
+const http_status_1 = __importDefault(require("http-status"));
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const academeicSemester_service_1 = require("./academeicSemester.service");
+const createAcademicSemester = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield academeicSemester_service_1.AcademicSemesterServices.createAcademicSemesterIntoDb(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Academic Semester created successfully',
+        data: result, // Send the created academic semester data
+    });
+}));
 exports.AcademicSemesterControllers = {
     createAcademicSemester,
 };

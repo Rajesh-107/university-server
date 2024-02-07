@@ -17,7 +17,7 @@ exports.Months = [
 ];
 exports.AcademicSemesterName = [
     'Autumn',
-    'Fall',
     'Summer',
+    'Fall',
 ];
 exports.AcademicSemesterCode = ['01', '02', '03'];

@@ -1,10 +1,13 @@
 import express from 'express';
 import { AcademicSemesterControllers } from './academicSemester.controller';
+import middleware from '../../middleware/validatedRequest';
+import { AcademicValidations } from './academicSemster.validation';
 
 const router = express.Router();
 
 router.post(
   '/create-academic-semester',
+  middleware(AcademicValidations.createAcademicValidationSchema),
   AcademicSemesterControllers.createAcademicSemester
 );
 
