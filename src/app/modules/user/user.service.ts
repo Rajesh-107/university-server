@@ -5,13 +5,16 @@ import { Student } from '../student/student.interface';
 import { TUser } from './user.interface';
 
 import { User } from './user.model';
+// import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 
 const createStudentIntoDB = async (password: string, studentData: Student) => {
   const userData: Partial<TUser> = {};
   userData.password = password || (config.default_password as string);
   userData.role = 'student';
 
-  userData.id = '2024100001';
+  // const generateStudentId = (payLoad: TAcademicSemester) => {};
+
+  // userData.id = generateStudentId();
   //doing here references id with user
   const newUser = await User.create(userData);
   if (Object.keys(newUser).length) {

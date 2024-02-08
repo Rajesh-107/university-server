@@ -16,11 +16,13 @@ exports.UserServices = void 0;
 const student_model_1 = require("./../student/student.model");
 const config_1 = __importDefault(require("../../config"));
 const user_model_1 = require("./user.model");
+// import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 const createStudentIntoDB = (password, studentData) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = {};
     userData.password = password || config_1.default.default_password;
     userData.role = 'student';
-    userData.id = '2024100001';
+    // const generateStudentId = (payLoad: TAcademicSemester) => {};
+    // userData.id = generateStudentId();
     //doing here references id with user
     const newUser = yield user_model_1.User.create(userData);
     if (Object.keys(newUser).length) {

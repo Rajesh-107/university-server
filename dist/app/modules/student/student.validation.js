@@ -39,6 +39,7 @@ exports.CreateStudentSchema = zod_1.z.object({
             email: zod_1.z.string(),
             avatar: zod_1.z.string().optional(),
             localGuardian: exports.LocalGuardianValidationSchema,
+            admissionSmester: zod_1.z.string(),
             profileImg: zod_1.z.string().optional(),
         }),
     }),

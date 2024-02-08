@@ -23,9 +23,47 @@ const createAcademicSemester = (0, catchAsync_1.default)((req, res) => __awaiter
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Academic Semester created successfully',
-        data: result, // Send the created academic semester data
+        data: result,
+    });
+}));
+const getAllAcademicSemester = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield academeicSemester_service_1.AcademicSemesterServices.getAllAcademicSemesterFromDB();
+    res.status(200).json({
+        success: true,
+        message: 'All Academic semester found successfully',
+        data: result,
+    });
+}));
+const getSingleAcademicSemester = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const academicSemesterId = req.params.id;
+    const result = yield academeicSemester_service_1.AcademicSemesterServices.getAcademicSemesterFromDB(academicSemesterId);
+    res.status(200).json({
+        success: true,
+        message: 'Single Student data found successfully',
+        data: result,
+    });
+}));
+const singleAcademicSemesterDataUpdate = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const academicId = req.params.id;
+    const updatedData = req.body;
+    const existingAcademicSemester = yield academeicSemester_service_1.AcademicSemesterServices.getAcademicSemesterFromDB(academicId);
+    if (!existingAcademicSemester || existingAcademicSemester.length === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'Academic Semester not found',
+        });
+    }
+    const result = yield academeicSemester_service_1.AcademicSemesterServices.updateSingleAcadamicSemesterInDB(academicId, updatedData);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Academic Semester updated successfull',
+        data: result,
     });
 }));
 exports.AcademicSemesterControllers = {
     createAcademicSemester,
+    getAllAcademicSemester,
+    getSingleAcademicSemester,
+    singleAcademicSemesterDataUpdate,
 };

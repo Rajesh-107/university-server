@@ -55,6 +55,7 @@ export const CreateStudentSchema = z.object({
       email: z.string(),
       avatar: z.string().optional(),
       localGuardian: LocalGuardianValidationSchema,
+      admissionSmester: z.string(),
       profileImg: z.string().optional(),
     }),
   }),

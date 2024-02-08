@@ -10,6 +10,9 @@ const validatedRequest_1 = __importDefault(require("../../middleware/validatedRe
 const academicSemster_validation_1 = require("./academicSemster.validation");
 const router = express_1.default.Router();
 router.post('/create-academic-semester', (0, validatedRequest_1.default)(academicSemster_validation_1.AcademicValidations.createAcademicValidationSchema), academicSemester_controller_1.AcademicSemesterControllers.createAcademicSemester);
+router.get('/all-academic-semester', (0, validatedRequest_1.default)(academicSemster_validation_1.AcademicValidations.createAcademicValidationSchema), academicSemester_controller_1.AcademicSemesterControllers.getAllAcademicSemester);
+router.get('/single-academic-semester/:id', (0, validatedRequest_1.default)(academicSemster_validation_1.AcademicValidations.createAcademicValidationSchema), academicSemester_controller_1.AcademicSemesterControllers.getSingleAcademicSemester);
+router.patch('/update-single-academic-semester/:id', (0, validatedRequest_1.default)(academicSemster_validation_1.AcademicValidations.createAcademicValidationSchema), academicSemester_controller_1.AcademicSemesterControllers.singleAcademicSemesterDataUpdate);
 // router.get('/', StudentControllers.getAllStudents);
 // router.get('/:studentId', StudentControllers.getSingleStudent);
 // router.delete('/:studentId', StudentControllers.deleteSingleStudent);
