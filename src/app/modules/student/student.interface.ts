@@ -1,6 +1,11 @@
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
-export type Guardian = {
+export type TUserName = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+};
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -9,22 +14,18 @@ export type Guardian = {
   motherContactNo: string;
 };
 
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
   user: Types.ObjectId;
   password: string;
-  name: {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-  };
+  name: TUserName;
   gender: 'male' | 'female';
   dateOfBirth?: Date;
   contactNo: string;
@@ -32,11 +33,14 @@ export type Student = {
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
+  guardian: TGuardian;
   email: string;
   avatar?: string;
-  localGuardian: LocalGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
   admissionSmester: Types.ObjectId;
   isDeleted: boolean;
 };
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
+}

@@ -13,24 +13,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
-const student_model_1 = require("./../student/student.model");
 const config_1 = __importDefault(require("../../config"));
 const user_model_1 = require("./user.model");
-// import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
-const createStudentIntoDB = (password, studentData) => __awaiter(void 0, void 0, void 0, function* () {
+const academicSemester_model_1 = require("../academicSemester/academicSemester.model");
+const user_utils_1 = require("./user.utils");
+const student_model_1 = require("../student/student.model");
+const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Create a user object
     const userData = {};
+    // If password is not given, use default password
     userData.password = password || config_1.default.default_password;
+    // Set student role
     userData.role = 'student';
-    // const generateStudentId = (payLoad: TAcademicSemester) => {};
-    // userData.id = generateStudentId();
-    //doing here references id with user
+    // Find academic semester info
+    const Admissionsemester = yield academicSemester_model_1.AcademicSemester.findById(payload.admissionSmester);
+    console.log(Admissionsemester);
+    // Ensure admissionSemester is not null
+    // if (!admissionSemester) {
+    //   throw new Error('Admission semester not found');
+    // }
+    // Set generated id
+    userData.id = yield (0, user_utils_1.generateStudentId)(Admissionsemester);
+    // Create a user
     const newUser = yield user_model_1.User.create(userData);
-    if (Object.keys(newUser).length) {
-        studentData.id = newUser.id; //embdding id
-        studentData.user = newUser._id; // reference id
-        const newstudent = yield student_model_1.StudentModel.create(studentData);
-        return newstudent;
+    // Ensure newUser has been created
+    if (!newUser) {
+        throw new Error('Failed to create user');
     }
+    // Set id and user properties in payload
+    payload.id = newUser.id;
+    payload.user = newUser._id; // Reference _id
+    // Create a student
+    const newStudent = yield student_model_1.Student.create(payload);
+    // Ensure newStudent has been created
+    if (!newStudent) {
+        throw new Error('Failed to create student');
+    }
+    return newStudent;
 });
 exports.UserServices = {
     createStudentIntoDB,

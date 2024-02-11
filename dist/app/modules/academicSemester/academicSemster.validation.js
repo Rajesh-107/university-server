@@ -12,6 +12,16 @@ const createAcademicValidationSchema = zod_1.z.object({
         endMonth: zod_1.z.enum([...academicSemester_Constant_1.Months]),
     }),
 });
+const updateAcademicSemesterValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        name: zod_1.z.enum([...academicSemester_Constant_1.AcademicSemesterName]).optional(),
+        year: zod_1.z.string().optional(),
+        code: zod_1.z.enum([...academicSemester_Constant_1.AcademicSemesterCode]).optional(),
+        startMonth: zod_1.z.enum([...academicSemester_Constant_1.Months]).optional(),
+        endMonth: zod_1.z.enum([...academicSemester_Constant_1.Months]).optional(),
+    }),
+});
 exports.AcademicValidations = {
     createAcademicValidationSchema,
+    updateAcademicSemesterValidationSchema,
 };

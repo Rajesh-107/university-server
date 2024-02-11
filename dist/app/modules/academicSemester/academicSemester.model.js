@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AcademicSemester = void 0;
 const mongoose_1 = require("mongoose");
 const academicSemester_Constant_1 = require("./academicSemester.Constant");
-const academicSemesterSchema = new mongoose_1.Schema({
+const acdemicSemesterSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true,
@@ -40,16 +40,24 @@ const academicSemesterSchema = new mongoose_1.Schema({
 }, {
     timestamps: true,
 });
-academicSemesterSchema.pre('save', function (next) {
+acdemicSemesterSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         const isSemesterExists = yield exports.AcademicSemester.findOne({
-            name: this.name,
             year: this.year,
+            name: this.name,
         });
         if (isSemesterExists) {
-            throw new Error('Semester already exists');
+            throw new Error('Semester is already exists !');
         }
         next();
     });
 });
-exports.AcademicSemester = (0, mongoose_1.model)('AcademicSemester', academicSemesterSchema);
+exports.AcademicSemester = (0, mongoose_1.model)('AcademicSemester', acdemicSemesterSchema);
+// Name Year
+//2030 Autumn => Created
+// 2031 Autumn
+//2030 Autumn => XXX
+//2030 Fall => Created
+// Autumn 01
+// Summar 02
+// Fall 03

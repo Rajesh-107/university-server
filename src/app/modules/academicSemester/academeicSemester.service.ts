@@ -1,13 +1,12 @@
-import { ObjectId } from 'mongoose';
 import { AcademicSemesterNameCodMapper } from './academicSemester.Constant';
 import { TAcademicSemester } from './academicSemester.interface';
 import { AcademicSemester } from './academicSemester.model';
 
-const createAcademicSemesterIntoDb = async (payLoad: TAcademicSemester) => {
-  if (AcademicSemesterNameCodMapper[payLoad.name] !== payLoad.code) {
+const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
+  if (AcademicSemesterNameCodMapper[payload.name] !== payload.code) {
     throw new Error('Invalid semester Code');
   }
-  const result = await AcademicSemester.create(payLoad);
+  const result = await AcademicSemester.create(payload);
   return result;
 };
 
@@ -15,30 +14,41 @@ const getAllAcademicSemesterFromDB = async () => {
   const result = await AcademicSemester.find();
   return result;
 };
-const getAcademicSemesterFromDB = async (_id: ObjectId) => {
-  const result = await AcademicSemester.findOne({ _id });
+
+const getSingleAcademicSemesterFromDB = async (id: string) => {
+  const result = await AcademicSemester.findById(id);
+  if (!result) {
+    throw new Error('Academic semester not found');
+  }
+  return result;
+};
+
+const updateSingleAcademicSemesterInDB = async (
+  id: string,
+  payload: Partial<TAcademicSemester>
+) => {
+  if (
+    payload.name &&
+    payload.code &&
+    AcademicSemesterNameCodMapper[payload.name] !== payload.code
+  ) {
+    throw new Error('Invalid Semester Code');
+  }
+
+  const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  if (!result) {
+    throw new Error('Academic semester not found');
+  }
 
   return result;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updateSingleAcadamicSemesterInDB = async (
-  _id: ObjectId,
-  updatedData: any
-) => {
-  const result = await AcademicSemester.updateOne(
-    { _id },
-    { $set: updatedData }
-  );
-
-  const updatedDocument = await AcademicSemester.findOne({ _id });
-
-  return updatedDocument;
-};
-
 export const AcademicSemesterServices = {
-  createAcademicSemesterIntoDb,
+  createAcademicSemesterIntoDB,
   getAllAcademicSemesterFromDB,
-  getAcademicSemesterFromDB,
-  updateSingleAcadamicSemesterInDB,
+  getSingleAcademicSemesterFromDB,
+  updateSingleAcademicSemesterInDB,
 };
