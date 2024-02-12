@@ -38,7 +38,7 @@ export type TStudent = {
   avatar?: string;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  admissionSmester: Types.ObjectId;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 };
 export interface StudentModel extends Model<TStudent> {

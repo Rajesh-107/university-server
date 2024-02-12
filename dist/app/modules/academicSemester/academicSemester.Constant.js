@@ -23,6 +23,6 @@ exports.AcademicSemesterName = [
 exports.AcademicSemesterCode = ['01', '02', '03'];
 exports.AcademicSemesterNameCodMapper = {
     Autumn: '01',
-    Summer: '02',
+    Summar: '02',
     Fall: '03',
 };
