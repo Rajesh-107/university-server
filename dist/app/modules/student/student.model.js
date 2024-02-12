@@ -81,7 +81,6 @@ const studentSchema = new mongoose_1.Schema({
     id: {
         type: String,
         required: [true, 'ID is required'],
-        unique: true,
     },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
@@ -136,7 +135,7 @@ const studentSchema = new mongoose_1.Schema({
         required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
-    admissionSmester: {
+    admissionSemester: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'AcademicSemester',
     },

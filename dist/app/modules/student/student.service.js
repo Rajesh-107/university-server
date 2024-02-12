@@ -12,21 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentServices = void 0;
 const student_model_1 = require("./student.model");
 const getAllStudentsFromDB = (student) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.StudentModel.find(student);
+    const result = yield student_model_1.Student.find(student);
     return result;
 });
 const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     // const result = await StudentModel.findOne({ id });
-    const result = yield student_model_1.StudentModel.aggregate([{ $match: { id: id } }]);
+    const result = yield student_model_1.Student.aggregate([{ $match: { id: id } }]);
     return result;
 });
 const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.StudentModel.updateOne({ id }, { isDeleted: true });
+    const result = yield student_model_1.Student.updateOne({ id }, { isDeleted: true });
     return result;
 });
 const updateSingleStudentInDB = (id, updatedData) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.StudentModel.updateOne({ id }, { $set: updatedData });
-    const updatedDocument = yield student_model_1.StudentModel.findOne({ id });
+    const result = yield student_model_1.Student.updateOne({ id }, { $set: updatedData });
+    const updatedDocument = yield student_model_1.Student.findOne({ id });
     return updatedDocument;
 });
 exports.StudentServices = {
