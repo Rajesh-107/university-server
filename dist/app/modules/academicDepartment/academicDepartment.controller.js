@@ -31,27 +31,27 @@ const getAllAcademicDepartment = (0, catchAsync_1.default)((req, res) => __await
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Academic faculty are retrieved successfully',
+        message: 'Academic Department are retrieved successfully',
         data: result,
     });
 }));
 const getSingleAcademicDepartment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { facultyId } = req.params;
-    const result = yield academicDepartment_service_1.AcademicDepartmentServices.getSingleAcademicFacultyFromDB(facultyId);
+    const { departmentId } = req.params;
+    const result = yield academicDepartment_service_1.AcademicDepartmentServices.getSingleAcademicDepartmentsFromDB(departmentId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Academic faculty is retrieved successfully',
+        message: 'Academic Department is retrieved successfully',
         data: result,
     });
 }));
 const updateAcademicDepartment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { facultyId } = req.params;
-    const result = yield academicDepartment_service_1.AcademicDepartmentServices.updateSingleAcademicFacultyInDB(facultyId, req.body);
+    const { departmentId } = req.params;
+    const result = yield academicDepartment_service_1.AcademicDepartmentServices.updateSingleAcademicDepartmentInDB(departmentId, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Academic faculty is updated successfully',
+        message: 'Academic Department is updated successfully',
         data: result,
     });
 }));

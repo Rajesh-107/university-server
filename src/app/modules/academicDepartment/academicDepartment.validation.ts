@@ -29,7 +29,7 @@ const updatedAcademicDepartmentValidationSchema = z.object({
   }),
 });
 
-export const academicFucaltyValidation = {
+export const academicDepartmentValidation = {
   createAcademicDepartmentValidationSchema,
   updatedAcademicDepartmentValidationSchema,
 };
