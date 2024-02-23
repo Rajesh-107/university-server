@@ -34,29 +34,18 @@ const deleteSingleStudent = catchAsync(async (req, res) => {
   });
 });
 
-const singleStudentDataUpdate = catchAsync(async (req, res) => {
-  const studentId = req.params.studentId;
-  const updatedData = req.body;
-
-  const existingStudent = await StudentServices.getSingleStudentFromDB(
-    studentId
-  );
-  if (!existingStudent || existingStudent.length === 0) {
-    return res.status(404).json({
-      success: false,
-      message: 'Student not found',
-    });
-  }
-
+const updateStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
   const result = await StudentServices.updateSingleStudentInDB(
     studentId,
-    updatedData
+    student
   );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Student updated successfull',
+    message: 'Student is updated succesfully',
     data: result,
   });
 });
@@ -65,5 +54,5 @@ export const StudentControllers = {
   getAllStudents,
   getSingleStudent,
   deleteSingleStudent,
-  singleStudentDataUpdate,
+  updateStudent,
 };

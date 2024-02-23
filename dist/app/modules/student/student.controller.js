@@ -43,21 +43,14 @@ const deleteSingleStudent = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         data: result,
     });
 }));
-const singleStudentDataUpdate = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const studentId = req.params.studentId;
-    const updatedData = req.body;
-    const existingStudent = yield student_service_1.StudentServices.getSingleStudentFromDB(studentId);
-    if (!existingStudent || existingStudent.length === 0) {
-        return res.status(404).json({
-            success: false,
-            message: 'Student not found',
-        });
-    }
-    const result = yield student_service_1.StudentServices.updateSingleStudentInDB(studentId, updatedData);
+const updateStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { studentId } = req.params;
+    const { student } = req.body;
+    const result = yield student_service_1.StudentServices.updateSingleStudentInDB(studentId, student);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Student updated successfull',
+        message: 'Student is updated succesfully',
         data: result,
     });
 }));
@@ -65,5 +58,5 @@ exports.StudentControllers = {
     getAllStudents,
     getSingleStudent,
     deleteSingleStudent,
-    singleStudentDataUpdate,
+    updateStudent,
 };
