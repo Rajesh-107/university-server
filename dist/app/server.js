@@ -16,11 +16,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./config"));
 const mongoose_1 = __importDefault(require("mongoose"));
+let server;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(config_1.default.database_url);
-            app_1.default.listen(config_1.default.port, () => {
+            server = app_1.default.listen(config_1.default.port, () => {
                 console.log(`kaj app listening on port ${config_1.default.port}`);
             });
         }
@@ -30,6 +31,17 @@ function main() {
     });
 }
 main();
+process.on('unhandledRejection', () => {
+    if (server) {
+        server.close(() => {
+            process.exit(1);
+        });
+    }
+    process.exit(1);
+});
+process.on('uncaughtException', () => {
+    process.exit(1);
+});
 // const PORT = 5000
 // let server:Server;
 // async function bootstrap(){

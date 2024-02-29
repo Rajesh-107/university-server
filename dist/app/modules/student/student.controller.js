@@ -18,7 +18,7 @@ const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const getAllStudents = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_service_1.StudentServices.getAllStudentsFromDB();
+    const result = yield student_service_1.StudentServices.getAllStudentsFromDB(req.query);
     res.status(200).json({
         success: true,
         message: 'Student found successfully',

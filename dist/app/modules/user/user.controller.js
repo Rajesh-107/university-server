@@ -21,23 +21,13 @@ const user_service_1 = require("./user.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const createStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { password, student: studentData } = req.body;
-    try {
-        const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
-        (0, sendResponse_1.default)(res, {
-            statusCode: http_status_1.default.OK,
-            success: true,
-            message: 'Student is created successfully',
-            data: result,
-        });
-    }
-    catch (error) {
-        (0, sendResponse_1.default)(res, {
-            statusCode: error.status || http_status_1.default.INTERNAL_SERVER_ERROR,
-            success: false,
-            message: error.message || 'Internal Server Error',
-            error: error,
-        });
-    }
+    const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Student is created succesfully',
+        data: result,
+    });
 }));
 exports.UserController = {
     createStudent,

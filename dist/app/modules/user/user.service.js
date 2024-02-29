@@ -24,7 +24,7 @@ const user_utils_1 = require("./user.utils");
 const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // create a user object
     const userData = {};
-    //if password is not given , use default password
+    //if password is not given , use deafult password
     userData.password = password || config_1.default.default_password;
     //set student role
     userData.role = 'student';
@@ -33,16 +33,18 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
     const session = yield mongoose_1.default.startSession();
     try {
         session.startTransaction();
-        // set generated id
+        //set  generated id
         userData.id = yield (0, user_utils_1.generateStudentId)(admissionSemester);
         // create a user (transaction-1)
         const newUser = yield user_model_1.User.create([userData], { session }); // array
+        //create a student
         if (!newUser.length) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create user');
         }
-        // create a student (transaction-2)
+        // set id , _id as user
         payload.id = newUser[0].id;
-        payload.user = newUser[0]._id; // reference _id
+        payload.user = newUser[0]._id; //reference _id
+        // create a student (transaction-2)
         const newStudent = yield student_model_1.Student.create([payload], { session });
         if (!newStudent.length) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create student');
@@ -54,8 +56,7 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
     catch (err) {
         yield session.abortTransaction();
         yield session.endSession();
-        console.error('Error creating student:', err);
-        throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to create student', err);
+        throw new Error(err);
     }
 });
 exports.UserServices = {

@@ -13,8 +13,8 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
-  //if password is not given , use default password
-  userData.password = password || config.default_password;
+  //if password is not given , use deafult password
+  userData.password = password || (config.default_password as string);
 
   //set student role
   userData.role = 'student';
@@ -28,19 +28,22 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   try {
     session.startTransaction();
-    // set generated id
+    //set  generated id
     userData.id = await generateStudentId(admissionSemester);
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }); // array
 
+    //create a student
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
+    // set id , _id as user
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; //reference _id
 
     // create a student (transaction-2)
-    payload.id = newUser[0].id;
-    payload.user = newUser[0]._id; // reference _id
+
     const newStudent = await Student.create([payload], { session });
 
     if (!newStudent.length) {
@@ -51,15 +54,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     await session.endSession();
 
     return newStudent;
-  } catch (err) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    console.error('Error creating student:', err);
-    throw new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
-      'Failed to create student',
-      err
-    );
+    throw new Error(err);
   }
 };
 
