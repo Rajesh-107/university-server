@@ -13,14 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
-const config_1 = __importDefault(require("../../config"));
-const user_model_1 = require("./user.model");
-const academicSemester_model_1 = require("../academicSemester/academicSemester.model");
-const user_utils_1 = require("./user.utils");
-const student_model_1 = require("../student/student.model");
-const mongoose_1 = __importDefault(require("mongoose"));
-const Apperror_1 = __importDefault(require("../../errors/Apperror"));
 const http_status_1 = __importDefault(require("http-status"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const config_1 = __importDefault(require("../../config"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
+const student_model_1 = require("../student/student.model");
+const academicSemester_model_1 = require("./../academicSemester/academicSemester.model");
+const user_model_1 = require("./user.model");
+const user_utils_1 = require("./user.utils");
 const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // create a user object
     const userData = {};
@@ -39,7 +39,7 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
         const newUser = yield user_model_1.User.create([userData], { session }); // array
         //create a student
         if (!newUser.length) {
-            throw new Apperror_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create user');
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create user');
         }
         // set id , _id as user
         payload.id = newUser[0].id;
@@ -47,7 +47,7 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
         // create a student (transaction-2)
         const newStudent = yield student_model_1.Student.create([payload], { session });
         if (!newStudent.length) {
-            throw new Apperror_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create student');
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to create student');
         }
         yield session.commitTransaction();
         yield session.endSession();
@@ -56,7 +56,7 @@ const createStudentIntoDB = (password, payload) => __awaiter(void 0, void 0, voi
     catch (err) {
         yield session.abortTransaction();
         yield session.endSession();
-        throw new Error('Failed to create student');
+        throw new Error(err);
     }
 });
 exports.UserServices = {

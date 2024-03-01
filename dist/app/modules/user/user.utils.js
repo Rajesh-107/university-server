@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateStudentId = exports.findLastStudentId = void 0;
+exports.generateStudentId = void 0;
 const user_model_1 = require("./user.model");
 const findLastStudentId = () => __awaiter(void 0, void 0, void 0, function* () {
     const lastStudent = yield user_model_1.User.findOne({
@@ -22,15 +22,14 @@ const findLastStudentId = () => __awaiter(void 0, void 0, void 0, function* () {
         createdAt: -1,
     })
         .lean();
-    return (lastStudent === null || lastStudent === void 0 ? void 0 : lastStudent.id) ? lastStudent.id.substring(6) : undefined;
+    //2030 01 0001
+    return (lastStudent === null || lastStudent === void 0 ? void 0 : lastStudent.id) ? lastStudent.id : undefined;
 });
-exports.findLastStudentId = findLastStudentId;
-// (await findLastStudentId()) ||
 const generateStudentId = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     // first time 0000
     //0001  => 1
     let currentId = (0).toString(); // 0000 by deafult
-    const lastStudentId = yield (0, exports.findLastStudentId)();
+    const lastStudentId = yield findLastStudentId();
     // 2030 01 0001
     const lastStudentSemesterCode = lastStudentId === null || lastStudentId === void 0 ? void 0 : lastStudentId.substring(4, 6); //01;
     const lastStudentYear = lastStudentId === null || lastStudentId === void 0 ? void 0 : lastStudentId.substring(0, 4); // 2030

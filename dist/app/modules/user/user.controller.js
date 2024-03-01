@@ -19,29 +19,8 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const user_service_1 = require("./user.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
-// const createStudent: RequestHandler = async (req, res, next) => {
-//   try {
-//     const { password, student: studentData } = req.body;
-//     const result = await UserServices.createStudentIntoDB(
-//       password,
-//       studentData
-//     );
-//     res.status(200).json({
-//       success: true,
-//       message: 'Student created successfully',
-//       data: result,
-//     });
-//   } catch (error) {
-//     console.error('Error creating student:', error);
-//     next(error);
-//   }
-// };
-// export const UserController = {
-//   createStudent,
-// };
 const createStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password } = req.body;
-    const studentData = req.body.student;
+    const { password, student: studentData } = req.body;
     const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

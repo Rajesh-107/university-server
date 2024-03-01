@@ -1,7 +1,7 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { User } from './user.model';
 
-export const findLastStudentId = async () => {
+const findLastStudentId = async () => {
   const lastStudent = await User.findOne(
     {
       role: 'student',
@@ -16,10 +16,10 @@ export const findLastStudentId = async () => {
     })
     .lean();
 
-  return lastStudent?.id ? lastStudent.id.substring(6) : undefined;
+  //2030 01 0001
+  return lastStudent?.id ? lastStudent.id : undefined;
 };
 
-// (await findLastStudentId()) ||
 export const generateStudentId = async (payload: TAcademicSemester) => {
   // first time 0000
   //0001  => 1

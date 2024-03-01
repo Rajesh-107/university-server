@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AcademicDepartment = void 0;
 const mongoose_1 = require("mongoose");
-const Apperror_1 = __importDefault(require("../../errors/Apperror"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
 const http_status_1 = __importDefault(require("http-status"));
 const academicDepartmentSchema = new mongoose_1.Schema({
     name: {
@@ -35,7 +35,7 @@ academicDepartmentSchema.pre('save', function (next) {
             name: this.name,
         });
         if (isDepartmentExists) {
-            throw new Apperror_1.default(http_status_1.default.NOT_FOUND, 'This Department already exists');
+            throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This Department already exists');
         }
         next();
     });
@@ -45,7 +45,7 @@ academicDepartmentSchema.pre('findOneAndUpdate', function (next) {
         const query = this.getQuery();
         const isDepartmentExists = yield exports.AcademicDepartment.findOne(query);
         if (!isDepartmentExists) {
-            throw new Apperror_1.default(http_status_1.default.NOT_FOUND, 'This Department already exists');
+            throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This Department already exists');
         }
         next();
     });
