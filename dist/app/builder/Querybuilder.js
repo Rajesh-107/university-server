@@ -25,8 +25,8 @@ class QueryBuilder {
         return this;
     }
     sort() {
-        var _a;
-        const sort = ((_a = this === null || this === void 0 ? void 0 : this.query) === null || _a === void 0 ? void 0 : _a.sort) || '-createdAt';
+        var _a, _b;
+        const sort = ((_b = (_a = this === null || this === void 0 ? void 0 : this.query.sort) === null || _a === void 0 ? void 0 : _a.split(',')) === null || _b === void 0 ? void 0 : _b.join(' ')) || '-createdAt';
         this.modelQuery = this.modelQuery.sort(sort);
         return this;
     }
@@ -39,8 +39,8 @@ class QueryBuilder {
         return this;
     }
     fields() {
-        var _a;
-        const fields = ((_a = this === null || this === void 0 ? void 0 : this.query.fields) === null || _a === void 0 ? void 0 : _a.split(',').join(' ')) || '-__v';
+        var _a, _b;
+        const fields = ((_b = (_a = this === null || this === void 0 ? void 0 : this.query.fields) === null || _a === void 0 ? void 0 : _a.split(',')) === null || _b === void 0 ? void 0 : _b.join(' ')) || '-__v';
         this.modelQuery = this.modelQuery.select(fields);
         return this;
     }

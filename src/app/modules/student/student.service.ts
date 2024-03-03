@@ -28,13 +28,13 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // }
   // const filterQuery = searchQuery
   //   .find(queryObj)
-  //   .populate('admissionSemester')
-  //   .populate({
-  //     path: 'academicDepartment',
-  //     populate: {
-  //       path: 'academicFaculty',
-  //     },
-  //   })
+  // .populate('admissionSemester')
+  // .populate({
+  //   path: 'academicDepartment',
+  //   populate: {
+  //     path: 'academicFaculty',
+  //   },
+  // })
   //   .sort(sort);
   // let page = 1;
   // let limit = 10;
@@ -52,7 +52,17 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // }
   // const fieldsQuery = paginateQuery.select(fields);
   // return fieldsQuery.exec();
-  const studentQuery = new QueryBuilder(Student.find(), query)
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query
+  )
     .search(stdentSearchfields)
     .filter()
     .sort()
