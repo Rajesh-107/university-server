@@ -91,7 +91,7 @@ const getAllStudentsFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.Student.findOne({ id })
+    const result = yield student_model_1.Student.findById(id)
         .populate('admissionSemester')
         .populate({
         path: 'academicDepartment',
@@ -105,11 +105,12 @@ const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, func
     const session = yield mongoose_1.default.startSession();
     try {
         session.startTransaction();
-        const deletedStudent = yield student_model_1.Student.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const deletedStudent = yield student_model_1.Student.findByIdAndUpdate(id, { isDeleted: true }, { new: true, session });
         if (!deletedStudent) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to delete student');
         }
-        const deletedUser = yield user_model_1.User.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const userId = deletedStudent.user;
+        const deletedUser = yield user_model_1.User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, session });
         if (!deletedUser) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to delete user');
         }
@@ -142,7 +143,7 @@ const updateSingleStudentInDB = (id, payLoad) => __awaiter(void 0, void 0, void 
         }
     }
     console.log(moodifiedUpdatedData);
-    const updatedDocument = yield student_model_1.Student.findOneAndUpdate({ id }, moodifiedUpdatedData, {
+    const updatedDocument = yield student_model_1.Student.findByIdAndUpdate(id, moodifiedUpdatedData, {
         new: true,
         runValidators: true,
     });

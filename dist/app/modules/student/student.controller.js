@@ -26,31 +26,33 @@ const getAllStudents = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
     });
 }));
 const getSingleStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const studentId = req.params.studentId;
-    const result = yield student_service_1.StudentServices.getSingleStudentFromDB(studentId);
+    // const studentId = req.params.studentId;
+    const { id } = req.params;
+    const result = yield student_service_1.StudentServices.getSingleStudentFromDB(id);
     res.status(200).json({
         success: true,
         message: 'Single Student data found successfully',
         data: result,
     });
 }));
-const deleteSingleStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const studentId = req.params.studentId;
-    const result = yield student_service_1.StudentServices.deleteSingleStudentFromDB(studentId);
-    res.status(200).json({
-        success: true,
-        message: 'Single Student data deleted successfully',
-        data: result,
-    });
-}));
 const updateStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { studentId } = req.params;
+    const { id } = req.params;
     const { student } = req.body;
-    const result = yield student_service_1.StudentServices.updateSingleStudentInDB(studentId, student);
+    const result = yield student_service_1.StudentServices.updateSingleStudentInDB(id, student);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Student is updated succesfully',
+        data: result,
+    });
+}));
+const deleteSingleStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // const studentId = req.params.studentId;
+    const { id } = req.params;
+    const result = yield student_service_1.StudentServices.deleteSingleStudentFromDB(id);
+    res.status(200).json({
+        success: true,
+        message: 'Single Student data deleted successfully',
         data: result,
     });
 }));
