@@ -12,7 +12,9 @@ const createCourseValidaationSchema = zod_1.z.object({
         prefix: zod_1.z.string(),
         code: zod_1.z.number(),
         credits: zod_1.z.number(),
-        preRequisiteCourses: zod_1.z.array(PreRequisiteCoursesValidationSchema),
+        preRequisiteCourses: zod_1.z
+            .array(PreRequisiteCoursesValidationSchema)
+            .optional(),
     }),
 });
 exports.CourseValidations = {

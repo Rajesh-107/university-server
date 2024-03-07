@@ -5,6 +5,7 @@ import { model } from 'mongoose';
 const preRequisiteCoursesSchema = new Schema<TpreRequisiteCourses>({
   course: {
     type: Schema.Types.ObjectId,
+    ref: 'Course',
   },
   isDeleted: {
     type: Boolean,

@@ -8,15 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
+const Querybuilder_1 = __importDefault(require("../../builder/Querybuilder"));
+const course_constant_1 = require("./course.constant");
 const course_model_1 = require("./course.model");
 const createCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.create(payLoad);
     return result;
 });
-const getAllCoursesFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield course_model_1.Course.find();
+const getAllCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const courseQuery = new Querybuilder_1.default(course_model_1.Course.find().populate('preRequisiteCourses.course'), query)
+        .search(course_constant_1.CourseSearchableFields)
+        .filter()
+        .fields()
+        .paginate()
+        .sort();
+    const result = yield courseQuery.modelQuery;
     return result;
 });
 const getSingleCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {

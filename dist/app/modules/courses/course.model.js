@@ -6,6 +6,7 @@ const mongoose_2 = require("mongoose");
 const preRequisiteCoursesSchema = new mongoose_1.Schema({
     course: {
         type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Course',
     },
     isDeleted: {
         type: Boolean,
