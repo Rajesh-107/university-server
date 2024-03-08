@@ -36,5 +36,9 @@ const courseSchema = new mongoose_1.Schema({
         required: true,
     },
     preRequisiteCourses: [preRequisiteCoursesSchema],
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
 });
 exports.Course = (0, mongoose_2.model)('Course', courseSchema);
