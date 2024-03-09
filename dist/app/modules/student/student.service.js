@@ -50,13 +50,13 @@ const getAllStudentsFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
     // }
     // const filterQuery = searchQuery
     //   .find(queryObj)
-    //   .populate('admissionSemester')
-    //   .populate({
-    //     path: 'academicDepartment',
-    //     populate: {
-    //       path: 'academicFaculty',
-    //     },
-    //   })
+    // .populate('admissionSemester')
+    // .populate({
+    //   path: 'academicDepartment',
+    //   populate: {
+    //     path: 'academicFaculty',
+    //   },
+    // })
     //   .sort(sort);
     // let page = 1;
     // let limit = 10;
@@ -74,7 +74,14 @@ const getAllStudentsFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
     // }
     // const fieldsQuery = paginateQuery.select(fields);
     // return fieldsQuery.exec();
-    const studentQuery = new Querybuilder_1.default(student_model_1.Student.find(), query)
+    const studentQuery = new Querybuilder_1.default(student_model_1.Student.find()
+        .populate('admissionSemester')
+        .populate({
+        path: 'academicDepartment',
+        populate: {
+            path: 'academicFaculty',
+        },
+    }), query)
         .search(student_constant_1.stdentSearchfields)
         .filter()
         .sort()
@@ -84,7 +91,7 @@ const getAllStudentsFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield student_model_1.Student.findOne({ id })
+    const result = yield student_model_1.Student.findById(id)
         .populate('admissionSemester')
         .populate({
         path: 'academicDepartment',
@@ -98,11 +105,12 @@ const deleteSingleStudentFromDB = (id) => __awaiter(void 0, void 0, void 0, func
     const session = yield mongoose_1.default.startSession();
     try {
         session.startTransaction();
-        const deletedStudent = yield student_model_1.Student.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const deletedStudent = yield student_model_1.Student.findByIdAndUpdate(id, { isDeleted: true }, { new: true, session });
         if (!deletedStudent) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to delete student');
         }
-        const deletedUser = yield user_model_1.User.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+        const userId = deletedStudent.user;
+        const deletedUser = yield user_model_1.User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, session });
         if (!deletedUser) {
             throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to delete user');
         }
@@ -135,7 +143,7 @@ const updateSingleStudentInDB = (id, payLoad) => __awaiter(void 0, void 0, void 
         }
     }
     console.log(moodifiedUpdatedData);
-    const updatedDocument = yield student_model_1.Student.findOneAndUpdate({ id }, moodifiedUpdatedData, {
+    const updatedDocument = yield student_model_1.Student.findByIdAndUpdate(id, moodifiedUpdatedData, {
         new: true,
         runValidators: true,
     });

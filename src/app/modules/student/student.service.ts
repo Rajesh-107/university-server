@@ -28,13 +28,13 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // }
   // const filterQuery = searchQuery
   //   .find(queryObj)
-  //   .populate('admissionSemester')
-  //   .populate({
-  //     path: 'academicDepartment',
-  //     populate: {
-  //       path: 'academicFaculty',
-  //     },
-  //   })
+  // .populate('admissionSemester')
+  // .populate({
+  //   path: 'academicDepartment',
+  //   populate: {
+  //     path: 'academicFaculty',
+  //   },
+  // })
   //   .sort(sort);
   // let page = 1;
   // let limit = 10;
@@ -52,7 +52,17 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // }
   // const fieldsQuery = paginateQuery.select(fields);
   // return fieldsQuery.exec();
-  const studentQuery = new QueryBuilder(Student.find(), query)
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query
+  )
     .search(stdentSearchfields)
     .filter()
     .sort()
@@ -65,7 +75,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -82,8 +92,8 @@ const deleteSingleStudentFromDB = async (id: string) => {
   try {
     session.startTransaction();
 
-    const deletedStudent = await Student.findOneAndUpdate(
-      { id },
+    const deletedStudent = await Student.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session }
     );
@@ -91,9 +101,10 @@ const deleteSingleStudentFromDB = async (id: string) => {
     if (!deletedStudent) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
     }
+    const userId = deletedStudent.user;
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const deletedUser = await User.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session }
     );
@@ -140,8 +151,8 @@ const updateSingleStudentInDB = async (
   }
 
   console.log(moodifiedUpdatedData);
-  const updatedDocument = await Student.findOneAndUpdate(
-    { id },
+  const updatedDocument = await Student.findByIdAndUpdate(
+    id,
     moodifiedUpdatedData,
     {
       new: true,

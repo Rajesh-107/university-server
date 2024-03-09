@@ -1,6 +1,4 @@
 "use strict";
-// import { RequestHandler } from 'express';
-// import { UserServices } from './user.service';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,43 +12,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.FacultyControllers = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-const user_service_1 = require("./user.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
-const createStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password, student: studentData } = req.body;
-    const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
+const faculty_service_1 = require("./faculty.service");
+const getSingleFaculty = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield faculty_service_1.FacultyServices.getSingleFacultyFromDB(id);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Student is created succesfully',
+        message: 'Faculty is retrieved succesfully',
         data: result,
     });
 }));
-const createFaculty = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password, faculty: facultyData } = req.body;
-    const result = yield user_service_1.UserServices.createFacultyIntoDB(password, facultyData);
+const getAllFaculties = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield faculty_service_1.FacultyServices.getAllFacultiesFromDB(req.query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Faculty is created succesfully',
+        message: 'Faculties are retrieved succesfully',
         data: result,
     });
 }));
-const createAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password, admin: adminData } = req.body;
-    const result = yield user_service_1.UserServices.createAdminIntoDB(password, adminData);
+const updateFaculty = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { faculty } = req.body;
+    const result = yield faculty_service_1.FacultyServices.updateFacultyIntoDB(id, faculty);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Admin is created succesfully',
+        message: 'Faculty is updated succesfully',
         data: result,
     });
 }));
-exports.UserController = {
-    createStudent,
-    createFaculty,
-    createAdmin,
+const deleteFaculty = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield faculty_service_1.FacultyServices.deleteFacultyFromDB(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Faculty is deleted succesfully',
+        data: result,
+    });
+}));
+exports.FacultyControllers = {
+    getAllFaculties,
+    getSingleFaculty,
+    deleteFaculty,
+    updateFaculty,
 };
