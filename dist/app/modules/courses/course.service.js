@@ -24,9 +24,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const Querybuilder_1 = __importDefault(require("../../builder/Querybuilder"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
 const course_constant_1 = require("./course.constant");
 const course_model_1 = require("./course.model");
+const mongoose_1 = __importDefault(require("mongoose"));
 const createCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.create(payLoad);
     return result;
@@ -45,10 +48,61 @@ const getSingleCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function
     const result = yield course_model_1.Course.findById(id).populate('preRequisiteCourses.course');
     return result;
 });
-const updatedCourse = (id, payLoad) => __awaiter(void 0, void 0, void 0, function* () {
-    const { preRequisiteCourses } = payLoad, courseRemainingData = __rest(payLoad, ["preRequisiteCourses"]);
-    const updatedBasicCourseInfo = yield course_model_1.Course.findByIdAndUpdate(id, courseRemainingData, { new: true, runValidators: true });
-    return updatedBasicCourseInfo;
+const updatedCourse = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { preRequisiteCourses } = payload, courseRemainingData = __rest(payload, ["preRequisiteCourses"]);
+    const session = yield mongoose_1.default.startSession();
+    try {
+        session.startTransaction();
+        //step1: basic course info update
+        const updatedBasicCourseInfo = yield course_model_1.Course.findByIdAndUpdate(id, courseRemainingData, {
+            new: true,
+            runValidators: true,
+            session,
+        });
+        if (!updatedBasicCourseInfo) {
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course!');
+        }
+        // check if there is any pre requisite courses to update
+        if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+            // filter out the deleted fields
+            const deletedPreRequisites = preRequisiteCourses
+                .filter((el) => el.course && el.isDeleted)
+                .map((el) => el.course);
+            const deletedPreRequisiteCourses = yield course_model_1.Course.findByIdAndUpdate(id, {
+                $pull: {
+                    preRequisiteCourses: { course: { $in: deletedPreRequisites } },
+                },
+            }, {
+                new: true,
+                runValidators: true,
+                session,
+            });
+            if (!deletedPreRequisiteCourses) {
+                throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course!');
+            }
+            // filter out the new course fields
+            const newPreRequisites = preRequisiteCourses === null || preRequisiteCourses === void 0 ? void 0 : preRequisiteCourses.filter((el) => el.course && !el.isDeleted);
+            const newPreRequisiteCourses = yield course_model_1.Course.findByIdAndUpdate(id, {
+                $addToSet: { preRequisiteCourses: { $each: newPreRequisites } },
+            }, {
+                new: true,
+                runValidators: true,
+                session,
+            });
+            if (!newPreRequisiteCourses) {
+                throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course!');
+            }
+        }
+        yield session.commitTransaction();
+        yield session.endSession();
+        const result = yield course_model_1.Course.findById(id).populate('preRequisiteCourses.course');
+        return result;
+    }
+    catch (err) {
+        yield session.abortTransaction();
+        yield session.endSession();
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course');
+    }
 });
 const deleteCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.findByIdAndUpdate(id, {
