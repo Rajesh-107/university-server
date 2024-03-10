@@ -12,6 +12,8 @@ const preRequisiteCoursesSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+}, {
+    _id: false,
 });
 const courseSchema = new mongoose_1.Schema({
     title: {
@@ -40,5 +42,7 @@ const courseSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+}, {
+    timestamps: true,
 });
 exports.Course = (0, mongoose_2.model)('Course', courseSchema);
