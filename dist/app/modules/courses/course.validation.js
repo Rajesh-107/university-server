@@ -34,8 +34,14 @@ const updateCurseValidationSchema = zod_1.z.object({
             .optional(),
     }),
 });
+const facultiesWithCourseValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        faculties: zod_1.z.array(zod_1.z.string()),
+    }),
+});
 // const updateCurseValidationSchema = createCourseValidaationSchema.partial();
 exports.CourseValidations = {
     createCourseValidaationSchema,
     updateCurseValidationSchema,
+    facultiesWithCourseValidationSchema,
 };

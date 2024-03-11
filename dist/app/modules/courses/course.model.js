@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Course = void 0;
+exports.courseFaculty = exports.Course = void 0;
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("mongoose");
 const preRequisiteCoursesSchema = new mongoose_1.Schema({
@@ -46,3 +46,17 @@ const courseSchema = new mongoose_1.Schema({
     timestamps: true,
 });
 exports.Course = (0, mongoose_2.model)('Course', courseSchema);
+const courseFacultiySchema = new mongoose_1.Schema({
+    course: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Course',
+        unique: true,
+    },
+    faculties: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Faculty',
+        },
+    ],
+});
+exports.courseFaculty = (0, mongoose_2.model)('CourseFaculty', courseFacultiySchema);

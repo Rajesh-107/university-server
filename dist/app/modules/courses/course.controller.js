@@ -65,10 +65,22 @@ const updateCoourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const assignFacultieswithCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { courseId } = req.params;
+    const { faculties } = req.body;
+    const result = yield course_service_1.CourseServices.assignFacultiesWithCourseIntoDB(courseId, faculties);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Courses is updated successfully',
+        data: result,
+    });
+}));
 exports.CourseControllers = {
     createCourses,
     getAllCourses,
     getSingleCourse,
     getDeleteCourse,
     updateCoourse,
+    assignFacultieswithCourse,
 };
