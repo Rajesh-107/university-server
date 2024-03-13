@@ -19,6 +19,11 @@ router.put(
   middleware(CourseValidations.facultiesWithCourseValidationSchema),
   CourseControllers.assignFacultieswithCourse
 );
+router.delete(
+  '/:courseId/remove-faculties',
+  middleware(CourseValidations.facultiesWithCourseValidationSchema),
+  CourseControllers.removeFacultiesFromCourseDB
+);
 
 router.patch(
   '/:id',
