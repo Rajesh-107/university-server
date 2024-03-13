@@ -110,10 +110,30 @@ const deleteCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* (
     }, { new: true });
     return result;
 });
+const assignFacultiesWithCourseIntoDB = (id, payLoad) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield course_model_1.courseFaculty.findByIdAndUpdate(id, {
+        course: id,
+        $addToSet: { faculties: { $each: payLoad } },
+    }, {
+        upsert: true,
+        new: true,
+    });
+    return result;
+});
+const removeFacultiesFromCourseDB = (id, payLoad) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield course_model_1.courseFaculty.findByIdAndUpdate(id, {
+        $pull: { faculties: payLoad },
+    }, {
+        new: true,
+    });
+    return result;
+});
 exports.CourseServices = {
     createCourseIntoDB,
     getAllCoursesFromDB,
     getSingleCourseFromDB,
     updatedCourse,
     deleteCourseFromDB,
+    assignFacultiesWithCourseIntoDB,
+    removeFacultiesFromCourseDB,
 };
