@@ -13,23 +13,20 @@ router.post(
   SemesterRegistrationController.createSemesterRegistration
 );
 
-// router.get(
-//   '/:id',
-//   SemesterRegistrationController.getSingleSemesterRegistration,
-// );
+router.get('/', SemesterRegistrationController.getAllSemesterRegistrations);
 
-// router.patch(
-//   '/:id',
-//   validateRequest(
-//     SemesterRegistrationValidations.upadateSemesterRegistrationValidationSchema,
-//   ),
-//   SemesterRegistrationController.updateSemesterRegistration,
-// );
+router.patch(
+  '/:id',
+  middleware(
+    SemesterRegistrationValidation.updateSemesteRegistrationValidationSchema
+  ),
+  SemesterRegistrationController.updateSemesterRegistration
+);
 
-// router.get(
-//   '/:id',
-//   SemesterRegistrationController.getSingleSemesterRegistration,
-// );
+router.get(
+  '/:id',
+  SemesterRegistrationController.getSingleSemesterRegistrations
+);
 
 // router.delete(
 //   '/:id',

@@ -10,21 +10,9 @@ const semesterRegistration_validation_1 = require("./semesterRegistration.valida
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 router.post('/create-semester-registration', (0, validatedRequest_1.default)(semesterRegistration_validation_1.SemesterRegistrationValidation.createSemesteRegistrationValidationSchema), semesterRegistration_controller_1.SemesterRegistrationController.createSemesterRegistration);
-// router.get(
-//   '/:id',
-//   SemesterRegistrationController.getSingleSemesterRegistration,
-// );
-// router.patch(
-//   '/:id',
-//   validateRequest(
-//     SemesterRegistrationValidations.upadateSemesterRegistrationValidationSchema,
-//   ),
-//   SemesterRegistrationController.updateSemesterRegistration,
-// );
-// router.get(
-//   '/:id',
-//   SemesterRegistrationController.getSingleSemesterRegistration,
-// );
+router.get('/', semesterRegistration_controller_1.SemesterRegistrationController.getAllSemesterRegistrations);
+router.patch('/:id', (0, validatedRequest_1.default)(semesterRegistration_validation_1.SemesterRegistrationValidation.updateSemesteRegistrationValidationSchema), semesterRegistration_controller_1.SemesterRegistrationController.updateSemesterRegistration);
+router.get('/:id', semesterRegistration_controller_1.SemesterRegistrationController.getSingleSemesterRegistrations);
 // router.delete(
 //   '/:id',
 //   SemesterRegistrationController.deleteSemesterRegistration,

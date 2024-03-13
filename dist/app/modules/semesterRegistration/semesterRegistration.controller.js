@@ -26,9 +26,38 @@ const createSemesterRegistration = (0, catchAsync_1.default)((req, res) => __awa
         data: result,
     });
 }));
+const getAllSemesterRegistrations = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield semesterRegistration_service_1.SemesterRegistrationService.getAllSemesterRegistrationsFromDB(req.query);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Semester Registration is retrieved successfully',
+        data: result,
+    });
+}));
+const getSingleSemesterRegistrations = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield semesterRegistration_service_1.SemesterRegistrationService.getSingleSemesterRegistrationsFromDB(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Semester Registration is retrieved successfully',
+        data: result,
+    });
+}));
+const updateSemesterRegistration = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield semesterRegistration_service_1.SemesterRegistrationService.updateSemesterRegistrationsFromDB(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Update is retrieved successfully',
+        data: result,
+    });
+}));
 exports.SemesterRegistrationController = {
     createSemesterRegistration,
-    //   getAllAcademicSemesters,
-    //   getSingleAcademicSemester,
-    //   updateAcademicSemester,
+    getAllSemesterRegistrations,
+    getSingleSemesterRegistrations,
+    updateSemesterRegistration,
 };

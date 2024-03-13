@@ -17,6 +17,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const academicSemester_model_1 = require("../academicSemester/academicSemester.model");
 const semesterRegistration_model_1 = require("./semesterRegistration.model");
+const Querybuilder_1 = __importDefault(require("../../builder/Querybuilder"));
 const createSemesterRegistrationIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const academicSmester = payLoad === null || payLoad === void 0 ? void 0 : payLoad.academicSemester;
     const isAcademicSmesterExist = yield academicSemester_model_1.AcademicSemester.findById(academicSmester);
@@ -32,10 +33,28 @@ const createSemesterRegistrationIntoDB = (payLoad) => __awaiter(void 0, void 0, 
     const result = yield semesterRegistration_model_1.SemesterRegistration.create(payLoad);
     return result;
 });
+const getAllSemesterRegistrationsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const semesterRegistrationQuery = new Querybuilder_1.default(semesterRegistration_model_1.SemesterRegistration.find().populate('academicSemester'), query)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+    const result = yield semesterRegistrationQuery.modelQuery;
+    return result;
+});
+const getSingleSemesterRegistrationsFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield semesterRegistration_model_1.SemesterRegistration.findById(id);
+    return result;
+});
+const updateSemesterRegistrationsFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield semesterRegistration_model_1.SemesterRegistration.findByIdAndUpdate(id);
+    return result;
+});
 exports.SemesterRegistrationService = {
     createSemesterRegistrationIntoDB,
-    // getAllSemesterRegistrationsFromDB,
-    // getSingleSemesterRegistrationsFromDB,
+    getAllSemesterRegistrationsFromDB,
+    getSingleSemesterRegistrationsFromDB,
+    updateSemesterRegistrationsFromDB,
     // updateSemesterRegistrationIntoDB,
     // deleteSemesterRegistrationFromDB,
 };
