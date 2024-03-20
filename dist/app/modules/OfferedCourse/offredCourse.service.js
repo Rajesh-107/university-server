@@ -22,7 +22,7 @@ const academicDepartment_model_1 = require("../academicDepartment/academicDepart
 const course_model_1 = require("../courses/course.model");
 const faculty_model_1 = require("../Faculty/faculty.model");
 const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
-    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, } = payLoad;
+    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, section, } = payLoad;
     const isSemesterRegistrationExits = yield semesterRegistration_model_1.SemesterRegistration.findById(semesterRegistration);
     if (!isSemesterRegistrationExits) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Semester registration not found');
@@ -44,6 +44,25 @@ const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0,
     if (!isFacultyExist) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'course Exist not found');
     }
+    const isDepartmentBelongToFaculty = yield academicDepartment_model_1.AcademicDepartment.findOne({
+        academicFaculty,
+        _id: academicDepartment,
+    });
+    if (!isDepartmentBelongToFaculty) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, `This ${isAcademicDepartmentExist.name} is not belong to this  ${isFacultyExist.name}}`);
+    }
+    const isSameOfferedCourseExistsWithSameRegisteedCourse = yield offeredCourse_model_1.OfferedCourse.findOne({
+        semesterRegistration,
+        course,
+        section,
+    });
+    if (!isSameOfferedCourseExistsWithSameRegisteedCourse) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, `This offred course sction alredy exists `);
+    }
+    const assignedSchedules = yield offeredCourse_model_1.OfferedCourse.find({
+        semesterRegistration,
+        faculty,
+    });
     const result = yield offeredCourse_model_1.OfferedCourse.create(Object.assign(Object.assign({}, payLoad), { acadmecicSemester }));
     return result;
 });
