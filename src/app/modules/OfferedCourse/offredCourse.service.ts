@@ -7,6 +7,7 @@ import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Course } from '../courses/course.model';
 import { Faculty } from '../Faculty/faculty.model';
+import { hasTimeConflict } from './offeredCourse.utils';
 
 const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   const {
@@ -16,6 +17,9 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
     course,
     faculty,
     section,
+    days,
+    startTime,
+    endTime,
   } = payLoad;
 
   const isSemesterRegistrationExits = await SemesterRegistration.findById(
@@ -75,7 +79,20 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   const assignedSchedules = await OfferedCourse.find({
     semesterRegistration,
     faculty,
-  });
+    days: { $in: days },
+  }).select('days stratTime endTime');
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+  if (hasTimeConflict(assignedSchedules, newSchedule)) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `This offred course sction alredy exists `
+    );
+  }
 
   const result = await OfferedCourse.create({ ...payLoad, acadmecicSemester });
   return result;

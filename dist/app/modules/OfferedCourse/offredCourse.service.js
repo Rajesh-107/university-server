@@ -21,8 +21,9 @@ const academicFaculty_model_1 = require("../academicFaculty/academicFaculty.mode
 const academicDepartment_model_1 = require("../academicDepartment/academicDepartment.model");
 const course_model_1 = require("../courses/course.model");
 const faculty_model_1 = require("../Faculty/faculty.model");
+const offeredCourse_utils_1 = require("./offeredCourse.utils");
 const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
-    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, section, } = payLoad;
+    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, section, days, startTime, endTime, } = payLoad;
     const isSemesterRegistrationExits = yield semesterRegistration_model_1.SemesterRegistration.findById(semesterRegistration);
     if (!isSemesterRegistrationExits) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Semester registration not found');
@@ -62,7 +63,16 @@ const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0,
     const assignedSchedules = yield offeredCourse_model_1.OfferedCourse.find({
         semesterRegistration,
         faculty,
-    });
+        days: { $in: days },
+    }).select('days stratTime endTime');
+    const newSchedule = {
+        days,
+        startTime,
+        endTime,
+    };
+    if ((0, offeredCourse_utils_1.hasTimeConflict)(assignedSchedules, newSchedule)) {
+        throw new AppError_1.default(http_status_1.default.CONFLICT, `This offred course sction alredy exists `);
+    }
     const result = yield offeredCourse_model_1.OfferedCourse.create(Object.assign(Object.assign({}, payLoad), { acadmecicSemester }));
     return result;
 });
