@@ -103,11 +103,54 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
 
 //   return result;
 // };
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
+const updateOfferedCourseIntoDB = async (
+  id: string,
+  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>
+) => {
+  const { faculty, days, startTime, endTime } = payload;
 
-//   return result;
-// };
+  const isOfferedCourseExist = await OfferedCourse.findById(id);
+  if (!isOfferedCourseExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'offered course not found');
+  }
+  const isFacultyExist = await Faculty.findById(faculty);
+  if (!isFacultyExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found');
+  }
+  const semesterregistration = isOfferedCourseExist.semesterRegistration;
+  const semesterRegistrationstatus = await SemesterRegistration.findById(
+    semesterregistration
+  );
+  if (semesterRegistrationstatus?.status !== 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not updated this course`
+    );
+  }
+  const assignedSchedules = await OfferedCourse.find({
+    semesterregistration,
+    faculty,
+    days: { $in: days },
+  }).select('days stratTime endTime');
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+  if (hasTimeConflict(assignedSchedules, newSchedule)) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `This offred course sction alredy exists `
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
+
 // const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
 //   const result = await OfferedCourse.create(payLoad);
 
@@ -124,5 +167,5 @@ export const OfferedCourseServices = {
   // getAllOfferedCoursesFromDB,
   // getSingleOfferedCourseFromDB,
   // deleteOfferedCourseFromDB,
-  // updateOfferedCourseIntoDB,
+  updateOfferedCourseIntoDB,
 };

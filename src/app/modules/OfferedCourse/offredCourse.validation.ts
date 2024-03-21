@@ -1,6 +1,16 @@
 import { z } from 'zod';
 import { Days } from './offredCourse.constant';
 
+const timeStringSchema = z.string().refine(
+  (time) => {
+    const regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/; // 00-09 10-19 20-23
+    return regex.test(time);
+  },
+  {
+    message: 'Invalid time format , expected "HH:MM" in 24 hours format',
+  }
+);
+
 const createOfferedCourseValidationSchema = z.object({
   body: z
     .object({
@@ -11,47 +21,49 @@ const createOfferedCourseValidationSchema = z.object({
       faculty: z.string(),
       section: z.number(),
       maxCapacity: z.number(),
-      days: z.array(z.enum([...Days])),
-      startTime: z.string().refine(
-        (time) => {
-          const regex = /^([01][0-9]|2[0-3]):[0-5][0-9]$/;
-          return regex.test(time);
-        },
-        { message: 'Invalid time format' }
-      ),
-      endTime: z.string().refine(
-        (time) => {
-          const regex = /^([01][0-9]|2[0-3]):[0-5][0-9]$/;
-          return regex.test(time);
-        },
-        { message: 'Invalid time format' }
-      ),
+      days: z.array(z.enum([...Days] as [string, ...string[]])),
+      startTime: timeStringSchema, // HH: MM   00-23: 00-59
+      endTime: timeStringSchema,
     })
     .refine(
       (body) => {
+        // startTime : 10:30  => 1970-01-01T10:30
+        //endTime : 12:30  =>  1970-01-01T12:30
+
         const start = new Date(`1970-01-01T${body.startTime}:00`);
         const end = new Date(`1970-01-01T${body.endTime}:00`);
 
         return end > start;
       },
       {
-        message: 'Start time should be before End time',
+        message: 'Start time should be before End time !  ',
       }
     ),
 });
+
 const updateOfferedCourseValidationSchema = z.object({
-  body: z.object({
-    semesterRegistration: z.string().optional(),
-    academicFaculty: z.string().optional(),
-    academicDepartment: z.string().optional(),
-    course: z.string().optional(),
-    faculty: z.string().optional(),
-    section: z.number().optional(),
-    maxCapacity: z.number().optional(),
-    days: z.array(z.enum([...Days])).optional(),
-    startTime: z.string().optional(),
-    endTime: z.string().optional(),
-  }),
+  body: z
+    .object({
+      faculty: z.string(),
+      maxCapacity: z.number(),
+      days: z.array(z.enum([...Days] as [string, ...string[]])),
+      startTime: timeStringSchema, // HH: MM   00-23: 00-59
+      endTime: timeStringSchema,
+    })
+    .refine(
+      (body) => {
+        // startTime : 10:30  => 1970-01-01T10:30
+        //endTime : 12:30  =>  1970-01-01T12:30
+
+        const start = new Date(`1970-01-01T${body.startTime}:00`);
+        const end = new Date(`1970-01-01T${body.endTime}:00`);
+
+        return end > start;
+      },
+      {
+        message: 'Start time should be before End time !  ',
+      }
+    ),
 });
 
 export const OfferedCourseValidations = {

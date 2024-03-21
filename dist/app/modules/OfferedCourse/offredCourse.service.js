@@ -80,10 +80,39 @@ const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0,
 //   const result = await OfferedCourse.create(payLoad);
 //   return result;
 // };
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
-//   return result;
-// };
+const updateOfferedCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { faculty, days, startTime, endTime } = payload;
+    const isOfferedCourseExist = yield offeredCourse_model_1.OfferedCourse.findById(id);
+    if (!isOfferedCourseExist) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'offered course not found');
+    }
+    const isFacultyExist = yield faculty_model_1.Faculty.findById(faculty);
+    if (!isFacultyExist) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Faculty not found');
+    }
+    const semesterregistration = isOfferedCourseExist.semesterRegistration;
+    const semesterRegistrationstatus = yield semesterRegistration_model_1.SemesterRegistration.findById(semesterregistration);
+    if ((semesterRegistrationstatus === null || semesterRegistrationstatus === void 0 ? void 0 : semesterRegistrationstatus.status) !== 'UPCOMING') {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, `You can not updated this course`);
+    }
+    const assignedSchedules = yield offeredCourse_model_1.OfferedCourse.find({
+        semesterregistration,
+        faculty,
+        days: { $in: days },
+    }).select('days stratTime endTime');
+    const newSchedule = {
+        days,
+        startTime,
+        endTime,
+    };
+    if ((0, offeredCourse_utils_1.hasTimeConflict)(assignedSchedules, newSchedule)) {
+        throw new AppError_1.default(http_status_1.default.CONFLICT, `This offred course sction alredy exists `);
+    }
+    const result = yield offeredCourse_model_1.OfferedCourse.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+    return result;
+});
 // const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
 //   const result = await OfferedCourse.create(payLoad);
 //   return result;
@@ -97,5 +126,5 @@ exports.OfferedCourseServices = {
     // getAllOfferedCoursesFromDB,
     // getSingleOfferedCourseFromDB,
     // deleteOfferedCourseFromDB,
-    // updateOfferedCourseIntoDB,
+    updateOfferedCourseIntoDB,
 };
