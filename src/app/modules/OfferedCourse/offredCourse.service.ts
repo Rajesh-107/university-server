@@ -8,6 +8,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Course } from '../courses/course.model';
 import { Faculty } from '../Faculty/faculty.model';
 import { hasTimeConflict } from './offeredCourse.utils';
+import QueryBuilder from '../../builder/Querybuilder';
 
 const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   const {
@@ -151,21 +152,45 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
+const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
+  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-//   return result;
-// };
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
+  const result = await offeredCourseQuery.modelQuery;
+  return result;
+};
+const deleteOfferedCourseFromDB = async (id: string) => {
+  const isOfferedCourseExists = await OfferedCourse.findById(id);
 
-//   return result;
-// };
+  if (!isOfferedCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found');
+  }
+
+  const semesterRegistation = isOfferedCourseExists.semesterRegistration;
+
+  const semesterRegistrationStatus = await SemesterRegistration.findById(
+    semesterRegistation
+  ).select('status');
+
+  if (semesterRegistrationStatus?.status !== 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Offered course can not update ! because the semester ${semesterRegistrationStatus}`
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndDelete(id);
+
+  return result;
+};
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
-  // getAllOfferedCoursesFromDB,
-  // getSingleOfferedCourseFromDB,
-  // deleteOfferedCourseFromDB,
+  getAllOfferedCoursesFromDB,
+
+  deleteOfferedCourseFromDB,
   updateOfferedCourseIntoDB,
 };

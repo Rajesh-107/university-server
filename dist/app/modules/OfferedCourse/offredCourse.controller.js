@@ -26,37 +26,50 @@ const createOfferedCourse = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         data: result,
     });
 }));
-// const createOfferedCourse = catchAsync(async (req:Request, res:Response) => {
-//     const result = await
-//     sendResponse(res, {
-//         statusCode:httpStatus.ok,
-//         success: true,
-//         message: 'Course created successfully'
-//         data:result
-//     })
-// })
-// const createOfferedCourse = catchAsync(async (req:Request, res:Response) => {
-//     const result = await
-//     sendResponse(res, {
-//         statusCode:httpStatus.ok,
-//         success: true,
-//         message: 'Course created successfully'
-//         data:result
-//     })
-// })
-// const createOfferedCourse = catchAsync(async (req:Request, res:Response) => {
-//     const result = await
-//     sendResponse(res, {
-//         statusCode:httpStatus.ok,
-//         success: true,
-//         message: 'Course created successfully'
-//         data:result
-//     })
-// })
+// const getAllOfferedCourses = catchAsync(async (req: Request, res: Response) => {
+//   //   const result =
+//   //   sendResponse(res, {
+//   //     statusCode: httpStatus.OK,
+//   //     success: true,
+//   //     message: 'OfferedCourses retrieved successfully !',
+//   //     data: result,
+//   //   });
+// });
+// const getSingleOfferedCourses = catchAsync(
+//   async (req: Request, res: Response) => {
+//     const { id } = req.params;
+//     //   const result =
+//     //   sendResponse(res, {
+//     //     statusCode: httpStatus.OK,
+//     //     success: true,
+//     //     message: 'OfferedCourse fetched successfully',
+//     //     data: result,
+//     //   });
+//   }
+// );
+const updateOfferedCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield offredCourse_service_1.OfferedCourseServices.updateOfferedCourseIntoDB(id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'OfferedCourse updated successfully',
+        data: result,
+    });
+}));
+const deleteOfferedCourseFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield offredCourse_service_1.OfferedCourseServices.de(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'OfferedCourse deleted successfully',
+        data: result,
+    });
+}));
 exports.OfferedCourseControllers = {
     createOfferedCourse,
+    updateOfferedCourse,
+    deleteOfferedCourseFromDB,
     // getAllOfferedCourses,
-    // getSingleOfferedCourses,
-    // updateOfferedCourse,
-    // deleteOfferedCourseFromDB,
 };

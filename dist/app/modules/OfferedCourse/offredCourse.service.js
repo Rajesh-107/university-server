@@ -22,6 +22,7 @@ const academicDepartment_model_1 = require("../academicDepartment/academicDepart
 const course_model_1 = require("../courses/course.model");
 const faculty_model_1 = require("../Faculty/faculty.model");
 const offeredCourse_utils_1 = require("./offeredCourse.utils");
+const Querybuilder_1 = __importDefault(require("../../builder/Querybuilder"));
 const createOfferedCourseIntoDB = (payLoad) => __awaiter(void 0, void 0, void 0, function* () {
     const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, section, days, startTime, endTime, } = payLoad;
     const isSemesterRegistrationExits = yield semesterRegistration_model_1.SemesterRegistration.findById(semesterRegistration);
@@ -113,18 +114,31 @@ const updateOfferedCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, voi
     });
     return result;
 });
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
-//   return result;
-// };
-// const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
-//   const result = await OfferedCourse.create(payLoad);
-//   return result;
-// };
+const getAllOfferedCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const offeredCourseQuery = new Querybuilder_1.default(offeredCourse_model_1.OfferedCourse.find(), query)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+    const result = yield offeredCourseQuery.modelQuery;
+    return result;
+});
+const deleteOfferedCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isOfferedCourseExists = yield offeredCourse_model_1.OfferedCourse.findById(id);
+    if (!isOfferedCourseExists) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'Offered Course not found');
+    }
+    const semesterRegistation = isOfferedCourseExists.semesterRegistration;
+    const semesterRegistrationStatus = yield semesterRegistration_model_1.SemesterRegistration.findById(semesterRegistation).select('status');
+    if ((semesterRegistrationStatus === null || semesterRegistrationStatus === void 0 ? void 0 : semesterRegistrationStatus.status) !== 'UPCOMING') {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, `Offered course can not update ! because the semester ${semesterRegistrationStatus}`);
+    }
+    const result = yield offeredCourse_model_1.OfferedCourse.findByIdAndDelete(id);
+    return result;
+});
 exports.OfferedCourseServices = {
     createOfferedCourseIntoDB,
-    // getAllOfferedCoursesFromDB,
-    // getSingleOfferedCourseFromDB,
-    // deleteOfferedCourseFromDB,
+    getAllOfferedCoursesFromDB,
+    deleteOfferedCourseFromDB,
     updateOfferedCourseIntoDB,
 };

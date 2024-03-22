@@ -12,10 +12,6 @@ const router = express_1.default.Router();
 // router.get('/', OfferedCourseControllers.getAllOfferedCourses);
 // router.get('/:id', OfferedCourseControllers.getSingleOfferedCourses);
 router.post('/create-offered-course', (0, validatedRequest_1.default)(offredCourse_validation_1.OfferedCourseValidations.createOfferedCourseValidationSchema), offredCourse_controller_1.OfferedCourseControllers.createOfferedCourse);
-// router.patch(
-//   '/:id',
-//   validateRequest(OfferedCourseValidations.updateOfferedCourseValidationSchema),
-//   OfferedCourseControllers.updateOfferedCourse
-// );
-// router.delete('/:id', OfferedCourseControllers.deleteOfferedCourseFromDB);
+router.patch('/:id', (0, validatedRequest_1.default)(offredCourse_validation_1.OfferedCourseValidations.updateOfferedCourseValidationSchema), offredCourse_controller_1.OfferedCourseControllers.updateOfferedCourse);
+router.delete('/:id', offredCourse_controller_1.OfferedCourseControllers.deleteOfferedCourseFromDB);
 exports.offeredCourseRoutes = router;
